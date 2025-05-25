@@ -20,8 +20,10 @@ def select_symbols():
 def set_move(position, player):
     if board[position] == " ":
         board[position] = player
+        return True
     else:
         print("Invalid move! Try again.")
+        return False
 
 def check_winner():
     winning_combinations = [
@@ -35,26 +37,33 @@ def check_winner():
             return board[a]
     return None
 
+def check_draw():
+    return all(cell != " " for cell in board)
+
 
 def play_game():
     current_player = select_symbols()
-    for _ in range(9):
+    while True: 
         print_board()
         position = int(input(f"Player {current_player}, enter your move (1-9): "))
         
-        set_move(position - 1, current_player)
+        if set_move(position - 1, current_player):
+            winner = check_winner()
+            if winner:
+                print_board()
+                print(f"Player {winner} wins!")
+                return
+            
+            if check_draw():
+                print_board()
+                print("It's a draw!")
+                return
+            current_player = "O" if current_player == "X" else "X"
+        continue
         
-        winner = check_winner()
-        if winner:
-            print_board()
-            print(f"Player {winner} wins!")
-            return
-        
-        current_player = "O" if current_player == "X" else "X"
-    
-    print_board()
-    print("It's a draw!")
-play_game()
+
+if __name__ == "__main__":
+    play_game()
 
 
 
